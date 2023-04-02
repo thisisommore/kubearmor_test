@@ -61,6 +61,6 @@ jobs:
     - name: Generate KubeArmor summary
       run: |
         sleep 12
-        karmor summary
+        karmor logs
 
     # Add your test steps or any other actions you need to perform after deployment
