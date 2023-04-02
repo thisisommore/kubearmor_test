@@ -1,4 +1,4 @@
-name: Deploy to K3s with KubeArmor
+name: Deploy to Minikube with KubeArmor
 
 on:
   push:
@@ -8,24 +8,21 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Create K3s cluster
+    - name: Setup Minikube
       run: |
-        sudo RUNTIME=docker bash -c "$(curl -sfL https://raw.githubusercontent.com/kubearmor/KubeArmor/main/contribution/k3s/install_k3s.sh)"
-        sudo chmod 644 /etc/rancher/k3s/k3s.yaml
-        sudo chown $USER:$USER /etc/rancher/k3s/k3s.yaml
-        kubectl get nodes
+        curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+        sudo install minikube-linux-amd64 /usr/local/bin/minikube
+        minikube start --driver=none
+        minikube update-context
 
     # Install karmor cli tool
     - name: Install KubeArmor CLI tool
       run: |
         curl -sfL http://get.kubearmor.io/ | sudo sh -s -- -b /usr/local/bin
-
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
@@ -43,8 +40,8 @@ jobs:
         push: true
         tags: thisisommore/kubearmor_test:latest
 
-    # Deploy your application to the K3s cluster
-    - name: Deploy to K3s cluster
+    # Deploy your application to the Minikube cluster
+    - name: Deploy to Minikube cluster
       run: |
         kubectl apply -f deployment.yml
         sleep 8
@@ -70,7 +67,6 @@ jobs:
         sudo apt-get update && sudo apt-get install -y socat jq
         POD_NAME=$(kubectl get pods -n kube-system -l k8s-app=kubearmor -o jsonpath='{.items[0].metadata.name}')
         PORT=$(python3 -c 'import socket; s = socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')
+        kubectl port-forward -n kube-system $POD_NAME $PORT:32767 &
         sleep 15
         curl http://localhost:$PORT/v1/kubearmor/summary
-
-    # Add your test steps or any other actions you need to perform after deployment
