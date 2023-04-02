@@ -30,7 +30,7 @@ jobs:
     - name: Install KubeArmor in the cluster
       run: |
         sudo karmor install
-
+        kubectl apply -f https://raw.githubusercontent.com/kubearmor/discovery-engine/dev/deployments/k8s/deployment.yaml
     # Deploy KubeArmor policies
     - name: Deploy KubeArmor policies
       run: |
