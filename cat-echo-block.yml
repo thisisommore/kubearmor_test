@@ -7,7 +7,7 @@ spec:
   severity: 5
   selector:
     matchLabels:
-      app: kubearmor-test
+      name: kubearmor-test
   process:
     matchPaths:
     - path: /bin/cat
