@@ -1,4 +1,4 @@
-name: Deploy to KIND
+name: Deploy to Kind
 
 on:
   push:
@@ -8,49 +8,36 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Login to DockerHub
-      uses: docker/login-action@v1
+    - name: Create Kind cluster
+      uses: helm/kind-action@v1.4.0
       with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+        version: v0.18.0
+        cluster_name: my-cluster
+        wait: 300s
+        kubectl_version: v1.23.12
 
+    # Build and push your Docker image (replace with your Dockerfile path and image name)
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
         context: .
+        file: Dockerfile
         push: true
-        tags: thisisommore/app-name:${{ github.sha }}
+        tags: thisisommore/kind_test:latest
 
-    - name: Set up KIND
-      uses: engineerd/setup-kind@v0.5.0
-
-    - name: Create KIND cluster
+    # Load the Docker image into the Kind cluster
+    - name: Load Docker image into Kind cluster
       run: |
-        kind create cluster --name test-cluster
+        docker pull thisisommore/kind_test:latest
+        kind load docker-image thisisommore/kind_test:latest --name my-cluster
 
-    - name: Update deployment.yaml with the image tag
+    # Deploy your application to the Kind cluster (replace with your Kubernetes manifest file path)
+    - name: Deploy to Kind cluster
       run: |
-        sed -i 's|thisisommore/kubearmor_test:latest|thisisommore/kubearmor_test:${{ github.sha }}|g' deployment.yaml
-
-    - name: Deploy app to KIND cluster
-      run: |
-        kubectl cluster-info --context kind-test-cluster
         kubectl apply -f deployment.yaml
 
-    # - name: Test app on KIND cluster
-    #   run: |
-    #     # Add your test commands here. For example:
-    #     kubectl wait --for=condition=available --timeout=120s deployment/your-app-deployment
-    #     # You can also use tools like curl or wget to send HTTP requests to your app, or run integration tests.
-
-    - name: Delete KIND cluster
-      run: |
-        kind delete cluster --name test-cluster
+    # Add your test steps or any other actions you need to perform after deployment
