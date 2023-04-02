@@ -1,0 +1,16 @@
+apiVersion: security.kubearmor.com/v1
+kind: KubeArmorPolicy
+metadata:
+  name: block-cat-and-echo
+  namespace: default
+spec:
+  severity: 5
+  selector:
+    matchLabels:
+      app: kubearmor-test
+  process:
+    matchPaths:
+    - path: /bin/cat
+    - path: /bin/echo
+  action:
+    Block
