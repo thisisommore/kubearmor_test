@@ -20,7 +20,14 @@ jobs:
         wait: 300s
         kubectl_version: v1.23.12
 
-    # Build and push your Docker image (replace with your Dockerfile path and image name)
+    # Log in to Docker Hub
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+    # Build and push your Docker image
     - name: Build and push Docker image
       uses: docker/build-push-action@v2
       with:
@@ -35,7 +42,7 @@ jobs:
         docker pull thisisommore/kind_test:latest
         kind load docker-image thisisommore/kind_test:latest --name my-cluster
 
-    # Deploy your application to the Kind cluster (replace with your Kubernetes manifest file path)
+    # Deploy your application to the Kind cluster
     - name: Deploy to Kind cluster
       run: |
         kubectl apply -f deployment.yaml
