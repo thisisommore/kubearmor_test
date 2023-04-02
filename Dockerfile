@@ -17,7 +17,7 @@ COPY . .
 RUN GOOS=linux go build -o kubearmor_test .
 
 # Use the scratch image for the final output
-FROM scratch
+FROM busybox
 
 # Set the working directory
 WORKDIR /root/
