@@ -53,8 +53,8 @@ jobs:
     # Install KubeArmor in the cluster
     - name: Install KubeArmor in the cluster
       run: |
-        sudo karmor install
         kubectl apply -f https://raw.githubusercontent.com/kubearmor/discovery-engine/dev/deployments/k8s/deployment.yaml
+        sudo karmor install
         sleep 10
         kubectl get all -n accuknox-agents
     # Deploy KubeArmor policies
