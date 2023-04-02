@@ -14,7 +14,7 @@ jobs:
 
     - name: Create K3s cluster
       run: |
-        curl -sfL https://github.com/kubearmor/KubeArmor/blob/main/contribution/k3s/install_k3s.sh | sudo RUNTIME=docker sh -
+        sudo RUNTIME=docker bash -c "$(curl -sfL https://raw.githubusercontent.com/kubearmor/KubeArmor/main/contribution/k3s/install_k3s.sh)"
 
     # Install karmor cli tool
     - name: Install KubeArmor CLI tool
