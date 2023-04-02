@@ -64,15 +64,19 @@ jobs:
         kubectl apply -f cat-echo-block.yml
 
     # Wait for 12 seconds to generate KubeArmor summary
+
     - name: Generate KubeArmor summary
       run: |
         sleep 30
+        kubectl get pods -n accuknox-agents -l app=discovery-engine
+        kubectl logs -n accuknox-agents -l app=discovery-engine
         sudo apt-get update && sudo apt-get install -y socat
         POD_NAME=$(kubectl get pods -n accuknox-agents -l app=discovery-engine -o jsonpath='{.items[0].metadata.name}')
         PORT=$(python3 -c 'import socket; s = socket.socket(); s.bind(("", 0)); print(s.getsockname()[1]); s.close()')
-        kubectl port-forward -n accuknox-agents $POD_NAME $PORT:32767 &
-        sleep 5
+        kubectl port-forward -n accuknox-agents $POD_NAME $PORT:9089 &
+        sleep 15
         curl http://localhost:$PORT/v1/summary
+
 
 
     # Add your test steps or any other actions you need to perform after deployment
