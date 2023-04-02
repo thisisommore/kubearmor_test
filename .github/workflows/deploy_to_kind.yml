@@ -47,18 +47,19 @@ jobs:
     - name: Deploy to K3s cluster
       run: |
         kubectl apply -f deployment.yml
-        kubectl describe po -l app="kubearmor-test"
         sleep 8
+        kubectl describe po -l app="kubearmor-test"
         
     # Install KubeArmor in the cluster
     - name: Install KubeArmor in the cluster
       run: |
         sudo karmor install
         kubectl apply -f https://raw.githubusercontent.com/kubearmor/discovery-engine/dev/deployments/k8s/deployment.yaml
-
+        sleep 10
     # Deploy KubeArmor policies
     - name: Deploy KubeArmor policies
       run: |
+        sleep 10
         kubectl apply -f cat-echo-block.yml
 
     # Wait for 12 seconds to generate KubeArmor summary
