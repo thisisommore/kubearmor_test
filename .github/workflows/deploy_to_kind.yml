@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: /etc/rancher/k3s/k3s.yaml
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
@@ -17,7 +19,6 @@ jobs:
         sudo RUNTIME=docker bash -c "$(curl -sfL https://raw.githubusercontent.com/kubearmor/KubeArmor/main/contribution/k3s/install_k3s.sh)"
         sudo chmod 644 /etc/rancher/k3s/k3s.yaml
         sudo chown $USER:$USER /etc/rancher/k3s/k3s.yaml
-        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
         kubectl get nodes
 
     # Install karmor cli tool
