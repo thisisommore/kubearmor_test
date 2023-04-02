@@ -67,5 +67,5 @@ jobs:
     - name: Generate KubeArmor summary
       run: |
         sleep 30
-        kubearmor summary
+        karmor summary
         
