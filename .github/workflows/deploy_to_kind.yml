@@ -15,6 +15,10 @@ jobs:
     - name: Create K3s cluster
       run: |
         sudo RUNTIME=docker bash -c "$(curl -sfL https://raw.githubusercontent.com/kubearmor/KubeArmor/main/contribution/k3s/install_k3s.sh)"
+        sudo chmod 644 /etc/rancher/k3s/k3s.yaml
+        sudo chown $USER:$USER /etc/rancher/k3s/k3s.yaml
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl get nodes
 
     # Install karmor cli tool
     - name: Install KubeArmor CLI tool
