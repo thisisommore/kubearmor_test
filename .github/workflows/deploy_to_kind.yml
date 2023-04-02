@@ -1,4 +1,4 @@
-name: Deploy to Kind with KubeArmor
+name: Deploy to K3s with KubeArmor
 
 on:
   push:
@@ -12,13 +12,11 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Create Kind cluster
-      uses: helm/kind-action@v1.4.0
-      with:
-        version: v0.18.0
-        cluster_name: my-cluster
-        wait: 300s
-        kubectl_version: v1.23.12
+    - name: Create K3s cluster
+      run: |
+        curl -sfL https://get.k3s.io | sh -
+        export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+        kubectl get nodes
 
     # Install karmor cli tool
     - name: Install KubeArmor CLI tool
@@ -49,16 +47,16 @@ jobs:
         context: .
         file: Dockerfile
         push: true
-        tags: thisisommore/kind_test:latest
+        tags: thisisommore/kubearmor_test:latest
 
-    # Load the Docker image into the Kind cluster
-    - name: Load Docker image into Kind cluster
+    # Load the Docker image into the K3s cluster
+    - name: Load Docker image into K3s cluster
       run: |
-        docker pull thisisommore/kind_test:latest
-        kind load docker-image thisisommore/kind_test:latest --name my-cluster
+        docker pull thisisommore/kubearmor_test:latest
+        k3s ctr images import thisisommore/kubearmor_test:latest
 
-    # Deploy your application to the Kind cluster
-    - name: Deploy to Kind cluster
+    # Deploy your application to the K3s cluster
+    - name: Deploy to K3s cluster
       run: |
         kubectl apply -f deployment.yml
 
