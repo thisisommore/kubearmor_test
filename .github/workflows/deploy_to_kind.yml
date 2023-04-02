@@ -45,6 +45,6 @@ jobs:
     # Deploy your application to the Kind cluster
     - name: Deploy to Kind cluster
       run: |
-        kubectl apply -f deployment.yaml
+        kubectl apply -f deployment.yml
 
     # Add your test steps or any other actions you need to perform after deployment
