@@ -31,10 +31,6 @@ jobs:
       run: |
         sudo karmor install
         kubectl apply -f https://raw.githubusercontent.com/kubearmor/discovery-engine/dev/deployments/k8s/deployment.yaml
-    # Deploy KubeArmor policies
-    - name: Deploy KubeArmor policies
-      run: |
-        kubectl apply -f cat-echo-block.yml
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
@@ -57,6 +53,12 @@ jobs:
       run: |
         kubectl apply -f deployment.yml
         kubectl get po
+        sleep 8
+
+    # Deploy KubeArmor policies
+    - name: Deploy KubeArmor policies
+      run: |
+        kubectl apply -f cat-echo-block.yml
 
     # Wait for 12 seconds to generate KubeArmor summary
     - name: Generate KubeArmor summary
