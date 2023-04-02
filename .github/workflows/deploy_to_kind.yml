@@ -28,7 +28,12 @@ jobs:
     # Install KubeArmor in the cluster
     - name: Install KubeArmor in the cluster
       run: |
-        kubectl create -f https://raw.githubusercontent.com/kubearmor/KubeArmor/main/deployments/kubearmor-quick-install.yaml
+        sudo karmor install
+
+    # Deploy KubeArmor policies
+    - name: Deploy KubeArmor policies
+      run: |
+        kubectl apply -f cat-echo-block.yml
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
@@ -57,9 +62,10 @@ jobs:
       run: |
         kubectl apply -f deployment.yml
 
-    # Deploy KubeArmor policies
-    - name: Deploy KubeArmor policies
+    # Wait for 12 seconds to generate KubeArmor summary
+    - name: Generate KubeArmor summary
       run: |
-        kubectl apply -f cat-echo-block.yml
+        sleep 12
+        karmor summary
 
     # Add your test steps or any other actions you need to perform after deployment
