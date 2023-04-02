@@ -26,11 +26,6 @@ jobs:
       run: |
         curl -sfL http://get.kubearmor.io/ | sudo sh -s -- -b /usr/local/bin
 
-    # Install KubeArmor in the cluster
-    - name: Install KubeArmor in the cluster
-      run: |
-        sudo karmor install
-        kubectl apply -f https://raw.githubusercontent.com/kubearmor/discovery-engine/dev/deployments/k8s/deployment.yaml
 
     # Log in to Docker Hub
     - name: Log in to Docker Hub
@@ -54,6 +49,12 @@ jobs:
         kubectl apply -f deployment.yml
         kubectl describe po -l app="kubearmor-test"
         sleep 8
+        
+    # Install KubeArmor in the cluster
+    - name: Install KubeArmor in the cluster
+      run: |
+        sudo karmor install
+        kubectl apply -f https://raw.githubusercontent.com/kubearmor/discovery-engine/dev/deployments/k8s/deployment.yaml
 
     # Deploy KubeArmor policies
     - name: Deploy KubeArmor policies
