@@ -56,6 +56,7 @@ jobs:
     - name: Deploy to K3s cluster
       run: |
         kubectl apply -f deployment.yml
+        kubectl get po
 
     # Wait for 12 seconds to generate KubeArmor summary
     - name: Generate KubeArmor summary
