@@ -6,6 +6,8 @@ import (
 	"os/exec"
 	"strings"
 	"time"
+
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -19,7 +21,7 @@ func executeCommands() {
 	catCmd := exec.Command("cat", "/etc/os-release")
 	catOutput, err := catCmd.Output()
 	if err != nil {
-		fmt.Printf("Failed to execute cat command: %v\n", err)
+		logrus.Errorf("Failed to execute cat command: %v", err)
 		return
 	}
 
@@ -28,10 +30,10 @@ func executeCommands() {
 	echoCmd.Stdout = &echoOutput
 	err = echoCmd.Run()
 	if err != nil {
-		fmt.Printf("Failed to execute echo command: %v\n", err)
+		logrus.Errorf("Failed to execute echo command: %v", err)
 		return
 	}
 
 	result := fmt.Sprintf("cat output:\n%s\necho output:\n%s", strings.TrimSpace(string(catOutput)), strings.TrimSpace(echoOutput.String()))
-	fmt.Println(result)
+	logrus.Info(result)
 }
